@@ -8,7 +8,7 @@ import {
   setTreeViewEnabled,
 } from "./config.ts";
 import { supportsPageRenaming } from "./compatability.ts";
-import { getPlugConfig } from "./config.ts";
+import { escapeRegExp, getPlugConfig } from "./config.ts";
 import { getSilverBulletTheme } from "./config.ts";
 
 /**
@@ -93,7 +93,8 @@ export async function showTree() {
     asset.readAsset(PLUG_NAME, "assets/icons/x-circle.svg"),
   ]);
 
-  const { currentPage, nodes } = await getPageTree();
+  const safeRegex = escapeRegExp(config.pageExcludeRegex);
+  const { currentPage, nodes } = await getPageTree(safeRegex);
   const customStyles = await getCustomStyles();
 
   const treeViewConfig = {

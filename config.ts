@@ -27,6 +27,7 @@ const treeViewConfigSchema = z.object({
     enabled: z.boolean().optional().default(true),
     confirmOnRename: z.boolean().optional().default(true),
   }).optional().default({}),
+  pageExcludeRegex: z.string().optional().default(""),
 });
 
 export type TreeViewConfig = z.infer<typeof treeViewConfigSchema>;
@@ -92,4 +93,9 @@ export async function getCustomStyles() {
     | string
     | undefined;
   return customStyles;
+}
+
+export function escapeRegExp(regExpString: string) {
+  // https://stackoverflow.com/a/3561711
+  return regExpString.replace(/[/\-\\^$*+?.()|[\]{}]/g, "\\$&");
 }

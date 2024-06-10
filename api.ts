@@ -36,10 +36,18 @@ export type TreeNode = {
 /**
  * Generates a TreeNode array from the list of pages in the current space.
  */
-export async function getPageTree() {
+export async function getPageTree(escapedPageRegex: string) {
   const currentPage = await editor.getCurrentPage();
-  const pages = await space.listPages();
+  let pages = await space.listPages();
   const root = { nodes: [] as TreeNode[] };
+
+  if (escapedPageRegex !== "") {
+    const pageRegExp = new RegExp(escapedPageRegex);
+    pages = pages.filter((o) => {
+      // exclude pages which match the escaped regex
+      !pageRegExp.test(o.name);
+    });
+  }
 
   pages.sort((a, b) => a.name.localeCompare(b.name)).forEach((page) => {
     page.name.split("/").reduce((parent, title, currentIndex, parts) => {
